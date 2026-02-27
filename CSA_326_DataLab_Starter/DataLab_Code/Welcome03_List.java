@@ -1,31 +1,30 @@
-/*
- * Creates an ArrayList of WeatherStation objects using
- * bouy data from the NOAA website.
- */
-import core.data.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Welcome03_List {
-   public static void main(String[] args) {  
 
-// check WeatherSTation for mods
-      DataSource ds = DataSource.connect("http://weather.gov/xml/current_obs/index.xml").load();
-      ArrayList<WeatherStation> allstns = ds.fetchList("WeatherStation", "station/station_name", 
-             "station/station_id", "station/state",
-             "station/latitude", "station/longitude");
-      //ds1.printUsageString(); 
+   public static void main(String[] args) {
+
+      ArrayList<WeatherStation> allstns = new ArrayList<WeatherStation>();
+
+
+      allstns.add(new WeatherStation("New York", "KNYC", "NY", 40.77, -73.98));
+      allstns.add(new WeatherStation("Los Angeles", "KLAX", "CA", 33.94, -118.40));
+      allstns.add(new WeatherStation("Chicago", "KORD", "IL", 41.98, -87.90));
+
+
       System.out.println("Total stations: " + allstns.size());
-      
-      Scanner sc = new Scanner(System.in);
-      System.out.println("Enter a state abbreviation: ");
-      String state = sc.next();
-      System.out.println("Stations in " + state);
+
+      WeatherStation westMost = allstns.get(0);
+
       for (WeatherStation ws : allstns) {
-         if (ws.isLocatedInState(state)) {
-            System.out.println("  " + ws.getId() + ": " + ws.getName());
+         if (ws.getLong() < westMost.getLong()) {
+            westMost = ws;
          }
       }
-     sc.close();
+
+      System.out.println("Farthest west station:");
+      System.out.println("  " + westMost.getId() + ": " + westMost.getName() +
+                         " (lat: " + westMost.getLat() +
+                         ", long: " + westMost.getLong() + ")");
    }
 }
